@@ -1,0 +1,20 @@
+<?php
+
+use Wasf\Database\Schema;
+
+return new class {
+    public function up()
+    {
+        // Schema::create('table_name', function($t) {
+        //     $t->id();
+        //     $t->string('name');
+        //     $t->integer('age')->nullable();
+        //     $t->timestamps();
+        // });
+    }
+
+    public function down()
+    {
+        // Schema::dropIfExists('table_name');
+    }
+};

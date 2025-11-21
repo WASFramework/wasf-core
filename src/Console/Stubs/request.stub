@@ -1,0 +1,8 @@
+<?php
+namespace Wasf\Http\Requests;
+
+class {{name}}
+{
+    public function authorize(): bool { return true; }
+    public function rules(): array { return []; }
+}

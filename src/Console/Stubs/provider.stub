@@ -1,0 +1,17 @@
+<?php
+namespace App\Providers;
+
+use Wasf\Foundation\ServiceProvider;
+
+class {{name}} extends ServiceProvider
+{
+    public function register(): void
+    {
+        // register bindings
+    }
+
+    public function boot(): void
+    {
+        // boot actions
+    }
+}

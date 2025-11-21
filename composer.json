@@ -1,0 +1,21 @@
+{
+  "name": "abesarrr/wasf-core",
+  "description": "WASF PHP Framework Core",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Wasf\\": "src/"
+    },
+    "files": [
+      "src/Support/helpers.php"
+    ]
+  },
+  "bin": ["bin/wasf"],
+  "require": {
+    "php": ">=8.1"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+  
+}

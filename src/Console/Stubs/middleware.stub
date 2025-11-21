@@ -1,0 +1,14 @@
+<?php
+namespace Wasf\Http\Middleware;
+
+use Wasf\Http\Request;
+use Wasf\Http\Response;
+
+class {{name}}
+{
+    public function handle(Request $request, Response $response, callable $next)
+    {
+        // middleware logic
+        return $next($request, $response);
+    }
+}
