@@ -84,8 +84,11 @@ class Blade
         self::$currentSection = null;
     }
     public static function section(string $name, string $content) { self::$sections[$name] = $content; }
-    public static function yield(string $name) { return self::$sections[$name] ?? ''; }
-
+    public static function yield(string $name) {
+        return array_key_exists($name, self::$sections)
+            ? self::$sections[$name]
+            : null;
+    }
     public static function render(string $view, array $data = []): string
     {
         self::$sections = [];
@@ -208,6 +211,17 @@ class Blade
 
         // @endsection
         $c = self::safe_replace('/@endsection\b/', "<?php \\Wasf\\View\\Blade::endSection(); ?>", $c);
+
+        // @yield('key', default)
+$c = preg_replace_callback(
+    '/@yield\(\s*[\'"](.+?)[\'"]\s*,\s*((?:[^()]|\([^()]*\))+)\s*\)/',
+    function ($m) {
+        $section = $m[1];
+        $default = $m[2]; // aman, tidak terpotong
+        return "<?php echo \\Wasf\\View\\Blade::yield('{$section}') ?: {$default}; ?>";
+    },
+    $c
+);
 
         // @yield('name')
         $c = self::safe_replace('/@yield\(\s*[\'"](.+?)[\'"]\s*\)/', "<?php echo \\Wasf\\View\\Blade::yield('$1'); ?>", $c);

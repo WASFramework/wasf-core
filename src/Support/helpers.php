@@ -31,6 +31,48 @@ if (!function_exists('view')) {
     }
 }
 
+if (!function_exists('url')) {
+
+    function url($path = null)
+    {
+        // Build object-like behavior
+        return new class($path) {
+
+            private $path;
+
+            public function __construct($path)
+            {
+                $this->path = $path;
+            }
+
+            // Return base URL of the site
+            private function base()
+            {
+                $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+                return $scheme . $_SERVER['HTTP_HOST'];
+            }
+
+            // url()->current()
+            public function current()
+            {
+                $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+                return $scheme . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+            }
+
+            // url('path')
+            public function __toString()
+            {
+                if ($this->path === null) {
+                    return $this->base();
+                }
+
+                $path = ltrim($this->path, '/');
+                return $this->base() . '/' . $path;
+            }
+        };
+    }
+}
+
 if (!function_exists('route')) {
     function route(string $name, array $params = []): ?string
     {
