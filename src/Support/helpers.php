@@ -182,3 +182,47 @@ if (!function_exists('abort')) {
         throw new HttpException($code, $message);
     }
 }
+
+if (!function_exists('now')) {
+    function now()
+    {
+        return Carbon::now();
+    }
+}
+
+if (!function_exists('carbon')) {
+    function carbon($time = null)
+    {
+        return Carbon::parse($time);
+    }
+}
+
+
+if (!function_exists('__')) {
+    function __($key)
+    {
+        $locale = Config::get('app.locale', 'en');
+        $fallback = Config::get('app.fallback_locale', 'en');
+
+        $path = base_path("lang/{$locale}/messages.php");
+        $fallbackPath = base_path("lang/{$fallback}/messages.php");
+
+        // load primary locale
+        if (file_exists($path)) {
+            $lines = include $path;
+            if (isset($lines[$key])) {
+                return $lines[$key];
+            }
+        }
+
+        // fallback
+        if (file_exists($fallbackPath)) {
+            $lines = include $fallbackPath;
+            if (isset($lines[$key])) {
+                return $lines[$key];
+            }
+        }
+
+        return $key; // return raw key if not found
+    }
+}
