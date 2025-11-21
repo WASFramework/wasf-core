@@ -2,6 +2,9 @@
 
 use Wasf\Exceptions\HttpException;
 
+/**
+ * env()
+ */
 if (!function_exists('env')) {
     function env(string $key, $default = null)
     {
@@ -10,6 +13,9 @@ if (!function_exists('env')) {
     }
 }
 
+/**
+ * config()
+ */
 if (!function_exists('config')) {
     function config(string $key, $default = null)
     {
@@ -17,62 +23,130 @@ if (!function_exists('config')) {
     }
 }
 
+/**
+ * base_path() — LARAVEL STYLE
+ * Mendeteksi root project, bukan public/
+ */
 if (!function_exists('base_path')) {
     function base_path(string $path = '')
     {
+        // Jika framework punya instance $app → gunakan itu
         global $app;
-        return $app->basePath($path);
+        if (isset($app) && method_exists($app, 'basePath')) {
+            return $app->basePath($path);
+        }
+
+        // Jika tidak ada, deteksi root secara otomatis
+        $dir = getcwd();
+        while ($dir !== dirname($dir)) {
+            if (is_dir($dir . '/app') && is_dir($dir . '/config')) {
+                return $path ? $dir . DIRECTORY_SEPARATOR . $path : $dir;
+            }
+            $dir = dirname($dir);
+        }
+
+        return $path ? getcwd() . DIRECTORY_SEPARATOR . $path : getcwd();
     }
 }
 
+/**
+ * app_path()
+ */
+if (!function_exists('app_path')) {
+    function app_path(string $path = '')
+    {
+        $base = base_path('app');
+        return $path ? $base . DIRECTORY_SEPARATOR . $path : $base;
+    }
+}
+
+/**
+ * storage_path()
+ */
+if (!function_exists('storage_path')) {
+    function storage_path(string $path = '')
+    {
+        $base = base_path('storage');
+        return $path ? $base . DIRECTORY_SEPARATOR . $path : $base;
+    }
+}
+
+/**
+ * public_path()
+ */
+if (!function_exists('public_path')) {
+    function public_path(string $path = '')
+    {
+        $base = base_path('public');
+        return $path ? $base . DIRECTORY_SEPARATOR . $path : $base;
+    }
+}
+
+/**
+ * config_path()
+ */
+if (!function_exists('config_path')) {
+    function config_path(string $path = '')
+    {
+        $base = base_path('config');
+        return $path ? $base . DIRECTORY_SEPARATOR . $path : $base;
+    }
+}
+
+
+/**
+ * view()
+ */
 if (!function_exists('view')) {
-    function view(string $v, array $d = []) {
+    function view(string $v, array $d = [])
+    {
         return \Wasf\View\Blade::render($v, $d);
     }
 }
 
+
+/**
+ * url()
+ */
 if (!function_exists('url')) {
 
     function url($path = null)
     {
-        // Build object-like behavior
         return new class($path) {
 
             private $path;
 
-            public function __construct($path)
-            {
-                $this->path = $path;
-            }
+            public function __construct($path) { $this->path = $path; }
 
-            // Return base URL of the site
             private function base()
             {
-                $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+                $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                    ? 'https://' : 'http://';
+
                 return $scheme . $_SERVER['HTTP_HOST'];
             }
 
-            // url()->current()
             public function current()
             {
-                $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+                $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                    ? 'https://' : 'http://';
+
                 return $scheme . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
             }
 
-            // url('path')
             public function __toString()
             {
-                if ($this->path === null) {
-                    return $this->base();
-                }
-
-                $path = ltrim($this->path, '/');
-                return $this->base() . '/' . $path;
+                if ($this->path === null) return $this->base();
+                return $this->base() . '/' . ltrim($this->path, '/');
             }
         };
     }
 }
 
+
+/**
+ * route()
+ */
 if (!function_exists('route')) {
     function route(string $name, array $params = []): ?string
     {
@@ -83,6 +157,10 @@ if (!function_exists('route')) {
     }
 }
 
+
+/**
+ * auth()
+ */
 if (!function_exists('auth')) {
     function auth()
     {
@@ -90,15 +168,22 @@ if (!function_exists('auth')) {
     }
 }
 
+
+/**
+ * redirect()
+ */
 if (!function_exists('redirect')) {
     function redirect(string $url, int $status = 302)
     {
         $response = new \Wasf\Http\Response();
-        $response->setStatus($status)->header('Location', $url);
-        return $response;
+        return $response->setStatus($status)->header('Location', $url);
     }
 }
 
+
+/**
+ * flash_put, flash_get
+ */
 if (!function_exists('flash_put')) {
     function flash_put(string $key, $value): void
     {
@@ -124,42 +209,10 @@ if (!function_exists('flash')) {
         if ($message === null) {
             return \Wasf\Support\Flash::get($key);
         }
-
         return \Wasf\Support\Flash::set($key, $message);
     }
 }
 
-if (!function_exists('upload_file')) {
-    function upload_file(array $file, string $destFolder)
-    {
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            return null;
-        }
-
-        // Validasi MIME sederhana
-        $allowed = ['image/jpeg', 'image/png', 'image/webp'];
-        if (!in_array($file['type'], $allowed)) {
-            return null;
-        }
-
-        // Buat folder jika belum ada
-        if (!is_dir($destFolder)) {
-            mkdir($destFolder, 0777, true);
-        }
-
-        // Nama unik
-        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = uniqid('pf_') . '.' . $ext;
-
-        $fullPath = $destFolder . '/' . $filename;
-
-        if (move_uploaded_file($file['tmp_name'], $fullPath)) {
-            return $filename;
-        }
-
-        return null;
-    }
-}
 
 if (!class_exists('\\Wasf\\Support\\Flash')) {
     class_alias(DummyFlash::class, '\\Wasf\\Support\\Flash');
@@ -176,27 +229,30 @@ if (!class_exists('DummyFlash')) {
     }
 }
 
-// --- old() helper ---
+
+/**
+ * old()
+ */
 if (!function_exists('old')) {
     function old($key, $default = null) {
         return $_SESSION['_old_inputs'][$key] ?? $default;
     }
 }
 
+
+/**
+ * model_from_table()
+ */
 if (!function_exists('model_from_table')) {
     function model_from_table(string $table)
     {
-        // contoh: users -> User
         $className = ucfirst(rtrim($table, 's'));
-
-        // cari di Modules folder
-        $paths = glob(base_path('Modules/*/Models/' . $className . '.php'));
+        $paths = glob(base_path("Modules/*/Models/{$className}.php"));
 
         if (!$paths) return null;
 
-        // Extract namespace dari path
         foreach ($paths as $path) {
-            $module = basename(dirname(dirname($path))); // Modules/Auth/Models
+            $module = basename(dirname(dirname($path)));
             return "Modules\\{$module}\\Models\\{$className}";
         }
 
@@ -204,6 +260,10 @@ if (!function_exists('model_from_table')) {
     }
 }
 
+
+/**
+ * validator()
+ */
 if (!function_exists('validator')) {
     function validator(): Wasf\Validation\Validator
     {
@@ -211,6 +271,10 @@ if (!function_exists('validator')) {
     }
 }
 
+
+/**
+ * dd()
+ */
 if (!function_exists('dd')) {
     function dd($v) {
         var_dump($v);
@@ -218,6 +282,10 @@ if (!function_exists('dd')) {
     }
 }
 
+
+/**
+ * abort()
+ */
 if (!function_exists('abort')) {
     function abort($code, $message = '')
     {
@@ -225,6 +293,10 @@ if (!function_exists('abort')) {
     }
 }
 
+
+/**
+ * now(), carbon()
+ */
 if (!function_exists('now')) {
     function now()
     {
@@ -240,6 +312,9 @@ if (!function_exists('carbon')) {
 }
 
 
+/**
+ * __() translator
+ */
 if (!function_exists('__')) {
     function __($key)
     {
@@ -249,22 +324,16 @@ if (!function_exists('__')) {
         $path = base_path("lang/{$locale}/messages.php");
         $fallbackPath = base_path("lang/{$fallback}/messages.php");
 
-        // load primary locale
         if (file_exists($path)) {
             $lines = include $path;
-            if (isset($lines[$key])) {
-                return $lines[$key];
-            }
+            if (isset($lines[$key])) return $lines[$key];
         }
 
-        // fallback
         if (file_exists($fallbackPath)) {
             $lines = include $fallbackPath;
-            if (isset($lines[$key])) {
-                return $lines[$key];
-            }
+            if (isset($lines[$key])) return $lines[$key];
         }
 
-        return $key; // return raw key if not found
+        return $key;
     }
 }

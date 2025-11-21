@@ -8,18 +8,21 @@ class ClearView extends Command
 
     public function handle(array $args): void
     {
-        $root = getcwd();
-        $dir = $root . '/storage/views';
+        $dir = storage_path('views');
+
         if (!is_dir($dir)) {
             $this->warn("No compiled views directory: {$dir}");
             return;
         }
+
         $files = glob($dir . '/*.php');
         $count = 0;
+
         foreach ($files as $f) {
             @unlink($f);
             $count++;
         }
+
         $this->info("Cleared {$count} compiled view(s).");
     }
 }

@@ -21,7 +21,7 @@ class Blade
     public static function cachePath(): string
     {
         if (!isset(self::$cachePath)) {
-            $root = self::getAppRoot();
+            $root = base_path();
             self::$cachePath = $root . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'views';
             if (!is_dir(self::$cachePath)) mkdir(self::$cachePath, 0777, true);
         }
@@ -30,7 +30,7 @@ class Blade
 
     protected static function viewFile(string $view): string
     {
-        $root = self::getAppRoot();
+        $root = base_path();
         $viewPath = str_replace('.', '/', $view);
 
         $candidates = [];
@@ -213,15 +213,15 @@ class Blade
         $c = self::safe_replace('/@endsection\b/', "<?php \\Wasf\\View\\Blade::endSection(); ?>", $c);
 
         // @yield('key', default)
-$c = preg_replace_callback(
-    '/@yield\(\s*[\'"](.+?)[\'"]\s*,\s*((?:[^()]|\([^()]*\))+)\s*\)/',
-    function ($m) {
-        $section = $m[1];
-        $default = $m[2]; // aman, tidak terpotong
-        return "<?php echo \\Wasf\\View\\Blade::yield('{$section}') ?: {$default}; ?>";
-    },
-    $c
-);
+        $c = preg_replace_callback(
+            '/@yield\(\s*[\'"](.+?)[\'"]\s*,\s*((?:[^()]|\([^()]*\))+)\s*\)/',
+            function ($m) {
+                $section = $m[1];
+                $default = $m[2]; // aman, tidak terpotong
+                return "<?php echo \\Wasf\\View\\Blade::yield('{$section}') ?: {$default}; ?>";
+            },
+            $c
+        );
 
         // @yield('name')
         $c = self::safe_replace('/@yield\(\s*[\'"](.+?)[\'"]\s*\)/', "<?php echo \\Wasf\\View\\Blade::yield('$1'); ?>", $c);
