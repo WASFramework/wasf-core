@@ -78,7 +78,7 @@ $trace = $exception->getTrace();
 
 // Optional: try to detect framework/version info
 $frameworkLabel = 'FRAMEWORK';
-$frameworkVersion = defined('APP_VERSION') ? APP_VERSION : (defined('WASF_VERSION') ? WASF_VERSION : (defined('LARAVEL_VERSION') ? LARAVEL_VERSION : 'Unknown'));
+$frameworkVersion = defined('APP_VERSION') ? APP_VERSION : (defined('WASF_VERSION') ? WASF_VERSION : 'Unknown');
 $phpVersion = phpversion();
 
 // Build frames grouped into vendor and app

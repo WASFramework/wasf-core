@@ -24,7 +24,7 @@ if (!function_exists('config')) {
 }
 
 /**
- * base_path() — LARAVEL STYLE
+ * base_path()
  * Mendeteksi root project, bukan public/
  */
 if (!function_exists('base_path')) {

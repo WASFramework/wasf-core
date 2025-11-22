@@ -21,7 +21,6 @@ class ExceptionHandler
 
     public function handle(\Throwable $e)
     {
-        // gunakan helper Laravel-style
         $log = storage_path('logs/error.log');
 
         @mkdir(dirname($log), 0777, true);

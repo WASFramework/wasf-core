@@ -1,4 +1,4 @@
 </div>
-        <script src="/assets/debug/ignition-laravel.js"></script>
+        <script src="/assets/debug/ignition.js"></script>
     </body>
 </html>
