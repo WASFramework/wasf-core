@@ -3,6 +3,7 @@
   "description": "WASF PHP Framework Core",
   "type": "library",
   "license": "MIT",
+
   "autoload": {
     "psr-4": {
       "Wasf\\": "src/"
@@ -11,11 +12,13 @@
       "src/Support/helpers.php"
     ]
   },
+
   "bin": ["bin/wasf"],
+
   "require": {
     "php": ">=8.1"
   },
-  "minimum-stability": "dev",
+
+  "minimum-stability": "stable",
   "prefer-stable": true
-  
 }
