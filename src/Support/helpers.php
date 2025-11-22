@@ -337,3 +337,10 @@ if (!function_exists('__')) {
         return $key;
     }
 }
+
+if (!function_exists('app_key')) {
+    function app_key(): ?string
+    {
+        return env('WASF_KEY');
+    }
+}
