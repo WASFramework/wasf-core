@@ -303,12 +303,12 @@ class Blade
 
         /* ---------------- Auth / CSRF / Errors ---------------- */
         $c = self::safe_replace(
-    '/@flash\(\s*[\'"](.+?)[\'"]\s*\)/',
-    '<?php if($__msg = \\Wasf\\Support\\Flash::get("$1")): ?>'
-        . '<?php echo \\Wasf\\View\\Blade::renderView("components.flash", ["type"=>"$1","message"=>$__msg]); ?>'
-    . '<?php endif; ?>',
-    $c
-);
+            '/@flash\(\s*[\'"](.+?)[\'"]\s*\)/',
+            '<?php if($__msg = \\Wasf\\Support\\Flash::get("$1")): ?>'
+                . '<?php echo \\Wasf\\View\\Blade::renderView("components.flash", ["type"=>"$1","message"=>$__msg]); ?>'
+            . '<?php endif; ?>',
+            $c
+        );
 
         $c = self::safe_replace('/@csrf\b/', '<?php echo \'<input type="hidden" name="_token" value="'.($_SESSION["_token"] ?? "").'">\'; ?>', $c);
 

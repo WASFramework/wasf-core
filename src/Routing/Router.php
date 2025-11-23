@@ -1,6 +1,6 @@
 <?php
 namespace Wasf\Routing;
-
+use Wasf\Exceptions\HttpException;
 class Router
 {
     protected RouteCollection $collection;
@@ -71,7 +71,13 @@ class Router
 
     public function dispatch(string $method, string $uri)
     {
-        return $this->collection->match($method, $uri);
+        $matched = $this->collection->match($method, $uri);
+
+        if (!$matched) {
+            throw new HttpException(404, "The requested route '{$uri}' was not found.");
+        }
+
+        return $matched;
     }
 
     public function route(string $name): ?string

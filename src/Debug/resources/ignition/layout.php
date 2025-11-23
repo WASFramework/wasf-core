@@ -1,24 +1,28 @@
 <?php include __DIR__ . '/header.php'; ?>
-<div class="h-0 w-full relative">
-    <div class="absolute top-[-1px] left-0 right-0 bottom-0 border-t border-dashed border-neutral-300 dark:border-white/[9%]"></div>
+
+<!-- Garis pemisah -->
+<div class="container-fluid p-0">
+    <hr class="border border-secondary border-opacity-25 m-0">
 </div>
+
 <div class="container">
+
+    <!-- Exception Summary -->
     <?php include __DIR__ . '/exception-summary.php'; ?>
-    <div class="h-0 w-full relative">
-        <div class="absolute top-[-1px] left-0 right-0 bottom-0 border-t border-dashed border-neutral-300 dark:border-white/[9%]"></div>
-    </div>
+    <hr class="border border-secondary border-opacity-25">
+
+    <!-- Trace List -->
     <?php include __DIR__ . '/trace-list.php'; ?>
-    <div class="h-0 w-full relative">
-        <div class="absolute top-[-1px] left-0 right-0 bottom-0 border-t border-dashed border-neutral-300 dark:border-white/[9%]"></div>
-    </div>
+    <hr class="border border-secondary border-opacity-25">
+
+    <!-- Database Queries -->
     <?php include __DIR__ . '/queries.php'; ?>
-    <div class="h-0 w-full relative">
-        <div class="absolute top-[-1px] left-0 right-0 bottom-0 border-t border-dashed border-neutral-300 dark:border-white/[9%]"></div>
-    </div>
+    <hr class="border border-secondary border-opacity-25">
+
+    <!-- Server Header -->
     <?php include __DIR__ . '/header-server.php'; ?>
-    <div class="h-0 w-full relative">
-        <div class="absolute top-[-1px] left-0 right-0 bottom-0 border-t border-dashed border-neutral-300 dark:border-white/[9%]"></div>
-    </div>
+    <hr class="border border-secondary border-opacity-25">
+
 </div>
 
 <?php include __DIR__ . '/footer.php'; ?>
