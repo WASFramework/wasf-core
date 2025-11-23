@@ -66,8 +66,22 @@ if (!function_exists('app_path')) {
 if (!function_exists('storage_path')) {
     function storage_path(string $path = '')
     {
-        $base = base_path('storage');
-        return $path ? $base . DIRECTORY_SEPARATOR . $path : $base;
+        $root = base_path('storage');
+        return $path ? $root . DIRECTORY_SEPARATOR . $path : $root;
+    }
+}
+
+/**
+ * disk_path()
+ */
+if (!function_exists('disk_path')) {
+    function disk_path(string $disk, string $path = '')
+    {
+        $config = config("filesystem.disks.{$disk}");
+        if (!$config || empty($config['root'])) return null;
+
+        $root = base_path($config['root']);
+        return $path ? $root . DIRECTORY_SEPARATOR . ltrim($path, '/') : $root;
     }
 }
 

@@ -1,15 +1,17 @@
 <?php
-namespace Wasf\Middleware;
+namespace Wasf\Http\Middleware;
+
+use Wasf\Auth\AuthManager;
+use Wasf\Http\Response;
 
 class AuthMiddleware
 {
-    public function handle(array $params, \Closure $next)
+    public function handle($request, $next)
     {
-        if (!auth()->check()) {
-            // store intended url (optional)
-            $_SESSION['intended'] = $_SERVER['REQUEST_URI'] ?? '/';
-            return redirect('/login')->with('error', 'Please login to access this page')->send();
+        if (!AuthManager::instance()->check()) {
+            return redirect('/login')->with('error', 'Silahkan login terlebih dahulu');
         }
-        return $next($params);
+
+        return $next($request);
     }
 }
